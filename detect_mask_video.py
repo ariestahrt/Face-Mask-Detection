@@ -12,6 +12,22 @@ import imutils
 import time
 import cv2
 import os
+from playsound import playsound
+import threading
+
+# Global
+sound_played = False
+
+def check_is_pake_masker(mask):
+	global sound_played
+	if(label == "No Mask"):
+		print("Ada orang yang gak pake masker")
+		if(sound_played == False):
+			sound_played = True
+			playsound("C:\Bayu\Python\Face-Mask-Detection-master\Face-Mask-Detection-master\siren1.wav")
+			sound_played = False
+	else:
+		print("Semua orang pake masker")
 
 def detect_and_predict_mask(frame, faceNet, maskNet):
 	# grab the dimensions of the frame and then construct a blob
@@ -123,6 +139,8 @@ while True:
 		# determine the class label and color we'll use to draw
 		# the bounding box and text
 		label = "Mask" if mask > withoutMask else "No Mask"
+		t = threading.Thread(target=check_is_pake_masker, args=(label,))
+		t.start()
 		color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
 
 		# include the probability in the label
